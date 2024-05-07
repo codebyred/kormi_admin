@@ -1,119 +1,46 @@
-"use client"
+import { UpdateForm } from "@/components/ui/dashboard/updateForm"
+import { Worker } from "@/lib/types";
 
-import { updateWorker } from "../../actions";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+const getWorkerById = async(id: number)=>{
+    try{
 
-import { Input } from "@/components/ui/input"
+        const apiResponse = await fetch(`http://localhost:3020/api/worker/${id}`,{
+            method:"GET"
+        });
 
-import { Button } from "@/components/ui/button"
+        if(!apiResponse.ok){
+            throw new Error("Could not fetch data");
+        }
 
-import { WorkerFormSchema} from "@/lib/schemas"
+        const workers: Worker[] = await apiResponse.json();
 
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+        return workers[0];
 
-import { useForm } from "react-hook-form"
+    }catch(e){
+        return {
+            id: 0,
+            firstName: "",
+            lastName: "",
+            location:"",
+            job: "",
+            charge:""
+        }
+    }
+}
 
-export default function Add({params}:{params:{
+export default async function Update({params}:{params:{
     id:string
 }}){
 
-    const form = useForm<z.infer<typeof WorkerFormSchema>>({
-        resolver:zodResolver(WorkerFormSchema),
-        defaultValues:{
-            id: Number(params.id),
-            firstName:"",
-            lastName:"",
-            location:"",
-            job:"",
-            charge:""
-        }
-    });
+    const worker: Worker = await getWorkerById(Number(params.id));
 
-    async function onsubmit(formData: z.infer<typeof WorkerFormSchema>){
-        await updateWorker(JSON.stringify(formData));
-    }
-
-    return (
-        <div className="flex min-h-screen flex-col p-8 border-2 border-red-600">
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onsubmit)} className="w-fit space-y-8">
-                    <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>FirstName</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>LastName</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="location"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Location</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="job"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>JobTitle</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="charge"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>ServiceCharge</FormLabel>
-                            <FormControl>
-                                <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <Button type="submit">Submit</Button>
-                </form>
-            </Form>
-        </div>
-    )
+    return <UpdateForm 
+        id={worker.id} 
+        firstName={worker.firstName} 
+        lastName={worker.lastName}
+        location={worker.location}
+        job={worker.job}
+        charge={worker.charge}
+    />
+    
 }

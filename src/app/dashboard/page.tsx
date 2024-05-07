@@ -16,7 +16,7 @@ export default async function Dashboard() {
   const userList: User[] = await getUserList();
 
   return (
-    <div className="grid grid-flow-col min-h-screen p-14 border-2 border-red-600">
+    <div className="grid grid-flow-col min-h-screen p-14">
       <Card className="w-[15rem] h-[10rem]">
         <CardHeader>
           <CardTitle>Total Worker</CardTitle>

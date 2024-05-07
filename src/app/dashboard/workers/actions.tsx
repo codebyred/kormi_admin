@@ -102,3 +102,7 @@ export const deleteWorker = async(formData:FormData)=>{
     revalidatePath("/dashboard/workers");
     redirect("/dashboard/workers");
 }
+
+export const goToUpdatePage = (formData: FormData)=>{
+    redirect(`/dashboard/workers/update/${formData.get("id")}`);
+}

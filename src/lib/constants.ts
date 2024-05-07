@@ -7,10 +7,6 @@ export const menuItems = [
     {
         title: "Workers",
         path: "/dashboard/workers",
-    },
-    {
-        title: "Bookings",
-        path: "/dashboard/bookings",
     }
 
 ];

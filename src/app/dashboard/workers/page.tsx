@@ -11,17 +11,20 @@ import {
 
 import { Button } from "@/components/ui/button"
 
-import { deleteWorker, getWorkerList } from "./actions";
+import { deleteWorker, getWorkerList, goToUpdatePage } from "./actions";
 
 import { Worker } from "@/lib/types";
 
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 
 export default async function Workers(){
 
+    revalidatePath("/dashboard/workers");
+
     const workers: Worker[] = await getWorkerList();
     return (
-        <div className=" flex min-h-screen flex-col p-8 border-2 border-red-600">
+        <div className=" flex min-h-screen flex-col p-8">
             <span className="">Workers</span>
             <div className="border-2 rounded border-gray-300">
 
@@ -46,7 +49,11 @@ export default async function Workers(){
                                     <TableCell>{worker.location}</TableCell>
                                     <TableCell>{worker.job}</TableCell>
                                     <TableCell>{worker.charge}</TableCell>
-                                    <TableCell>
+                                    <TableCell className="flex justify-between">
+                                        <form action={goToUpdatePage}>
+                                            <input type="hidden" name="id" value={worker.id}/>
+                                            <Button>Update</Button>
+                                        </form>   
                                         <form action={deleteWorker}>
                                             <input type="hidden" name="id" value={worker.id}/>
                                             <Button>Delete</Button>
